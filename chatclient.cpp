@@ -7,9 +7,6 @@
 
 #include <iostream>
 
-// #include <future>
-// #include <chrono>
-
 #include <fcntl.h>
 #include <sys/select.h>
 
@@ -22,16 +19,6 @@
 
 
 bool stdinHasData(){
-
-    // using a timeout of 0 so we aren't waiting:
-    // struct timespec timeout{ 0l, 0l };
-
-
-    // fd_set read_fds;
-    // FD_ZERO(&read_fds);
-    // FD_SET(STDIN_FILENO, &read_fds);
-
-
 
     // create a file descriptor set
     fd_set read_fds{};
@@ -107,8 +94,6 @@ void* writerThread(void *arg){
             input = std::string(stdin_buffer);
             printf("char read - %ld\n", num_read);
             
-            // getline(std::cin, input);
-            // printf("%s\n", input.c_str());
         }
         else{
             // printf(".\n");
