@@ -16,8 +16,6 @@
 #define delimitter  " "
 
 
-
-
 bool stdinHasData(){
 
     // create a file descriptor set
@@ -51,8 +49,6 @@ void* writerThread(void *arg){
 
     const int PORT = atoi(input.c_str());
 
-    printf("Port is %d", PORT);
-
     int sock = 0, valread, client_fd, pos;
     char buffer[BUFSIZ] = { 0 };
     char stdin_buffer[BUFSIZ] = { 0 };
@@ -81,6 +77,8 @@ void* writerThread(void *arg){
         pthread_exit(NULL);
     }
 
+    printf("Connected to port: %d \n", PORT);
+
     while (1){
 
         if (stdinHasData()){
@@ -92,7 +90,7 @@ void* writerThread(void *arg){
             
             stdin_buffer[num_read-1] = '\0';
             input = std::string(stdin_buffer);
-            printf("char read - %ld\n", num_read);
+            // printf("char read - %ld\n", num_read);
             
         }
         else{
@@ -139,12 +137,12 @@ void* writerThread(void *arg){
 
             // Seek back to the begining to start sending the actual file
             fseek(fp, 0 , SEEK_SET);
-            printf("\n - Strarting to transfer the file\n");
+            printf(" - Strarting to transfer the file\n");
             while( (remainDataSize > 0) && (lengthRead = fread(buffer, 1, sizeof(buffer), fp))>0 ){
                 send(sock, buffer, lengthRead, 0);
                 remainDataSize -= lengthRead;
             }
-            printf("\n - Successfully transferred the file \n");
+            printf(" - Successfully transferred the file \n");
             fclose(fp);
 
         }
@@ -225,7 +223,7 @@ int main(int argc, char const* argv[])
             memset(buffer, 0, BUFSIZ);
             read(clientSock, buffer, BUFSIZ);
 
-            printf("file size is  %s\n", buffer);
+            printf(" - file size is  %s\n", buffer);
             // send(sock, ack, strlen(ack), 0);
             // printf("File size ack sent\n");
 
@@ -239,14 +237,14 @@ int main(int argc, char const* argv[])
                 continue;
             }
 
-            printf("\nStrarting to receive the file\n");
+            printf(" - Strarting to receive the file\n");
             while ((remainDataSize > 0) && ((lengthRead = recv(clientSock, buffer, BUFSIZ, 0)) > 0))
             {
                     fwrite(buffer, sizeof(char), lengthRead, upload_fp);
                     remainDataSize -= lengthRead;
                     // fprintf(stdout, "Receive %ld bytes and we hope :- %ld bytes\n", lengthRead, remainDataSize);
             }
-            printf("\nFile received successfully\n");
+            printf(" - File received successfully\n");
             fclose(upload_fp);
         }
     
